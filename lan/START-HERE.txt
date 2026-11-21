@@ -1,0 +1,12 @@
+FairAware teacher website — temporary exam sessions
+
+1. On the teacher PC, extract the full ZIP and open PowerShell in the extracted folder. With Node.js 24 installed, run:
+   node server.mjs
+2. Open http://localhost:8766 on that PC. The matching hosted FairAware dashboard can also connect to this receiver from the same PC; allow local-network access if your browser asks. Keep the receiver running during preparation and the exam.
+3. Click Prepare exam, then Connection. The timer stays at zero while students connect. Configure the program your existing student batch file launches to POST JSON to the report URL shown. Use the teacher PC’s lab IP. Port 8766 is separate from a coordinator running on port 8765. If the receiver cannot detect its lab IP, replace <teacher-lab-IP> with the teacher PC’s actual network address.
+4. Send Content-Type: application/json and Authorization: Bearer <report-key>. The generated report key is in data/report-key.txt. This configuration file contains only the receiver access key. Event IDs, occurrence times, station names and section fields are described on the Connection page.
+5. When students are ready, return to Monitor and click Start exam. The timer starts then; students continue using the same report URL. Events received during preparation stay visible and are marked Before exam.
+6. Ending the exam or canceling preparation clears all student names, sections, station reports and events from the receiver's memory and closes its report URL. Stopping or restarting the receiver also clears the session. Refreshing the dashboard reconnects to the current preparation or exam. Previous exams cannot be reopened.
+7. A sender receives HTTP 200 for an accepted report, 422 for invalid JSON data, 409 for a closed or unknown exam and 401 for an incorrect report key. Keep the same event ID when retrying a report.
+
+This version uses no database. Student reports stay on the laboratory network. The website does not create report files or exam archives. An earlier version may have created data/exams.sqlite on a PC where it was run. This version does not read or modify that file.
